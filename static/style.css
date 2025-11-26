@@ -1,0 +1,418 @@
+:root {
+  --color-bg: #f8faff;             /* очень светлый голубовато-белый фон */
+  --color-text: #273746;           /* глубокий темно-синий текст */
+  --color-header-bg: #1c1c1c;      /* насыщенный темно-синий фон шапки */
+  --color-header-text: #dde6f0;    /* очень светлый голубовато-серый текст */
+  --color-btn-bg: #f8faff;         /* приглушённый сине-серый цвет кнопок */
+  --color-btn-bg-hover: #eceef8;   /* затемнённый оттенок кнопок при наведении */
+  --color-btn-text: #273746;       /* светлый текст на кнопках */
+  --color-btn-text-hover: #273746; /* почти белый текст */
+  --color-border: #b9b9b9;         /* светло-голубовато-серая рамка */
+  --color-link: #1c1c1c;           /* спокойный темно-синий цвет ссылок */
+  --color-link-hover: #1c1c1c;     /* более насыщенный темно-синий */
+  --color-current-page-bg: #1c1c1c; /* фон текущей страницы — сине-серый */
+  --color-current-page-text: #dde6f0; /* текст текущей страницы — светлый */
+}
+
+
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  margin: 0;
+  padding: 0px 0px 50px 0px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.container-fullwidth {
+  width: 100%;
+  max-width: 100%;
+  padding: 0 20px;
+}
+
+.header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--color-header-bg);
+  padding: 5px 20px;
+  color: var(--color-header-text);
+  user-select: none;
+  /* border-radius: 0 0 8px 8px; */
+  font-weight: 400;
+  font-size: 1.5rem;
+}
+
+.site-title {
+  font-weight: 900;
+  font-size: 20px;
+  opacity: 1;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.header-btn {
+  background: var(--color-btn-bg);
+  border: none;
+  color: var(--color-btn-text);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0px 16px;
+  /* border-radius: 6px; */
+  font-size: 0.95rem;
+  user-select: none;
+  transition: background-color 0.25s ease;
+}
+
+.header-btn:hover {
+  background-color: var(--color-btn-bg-hover);
+  color: var(--color-btn-text-hover);
+}
+
+.apply-btn {
+  background: var(--color-btn-bg);
+}
+
+.apply-btn:hover {
+  background-color: var(--color-btn-bg-hover);
+  color: var(--color-btn-text-hover);
+}
+
+.filter-bar {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  padding: 15px 20px;
+  font-size: 13px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: flex-start; /* можно оставить или заменить на center/space-between при необходимости */
+  width: 100%; /* занять всю ширину контейнера */
+  box-sizing: border-box;
+}
+
+.filter-groups {
+  display: flex;
+  gap: 20px;
+  flex-wrap: nowrap; /* или wrap, если много колонок и нужно переносить */
+  width: 100%; /* чтобы занять максимум пространства */
+  justify-content: space-between; /* равномерно распределяет колонки */
+}
+
+.filter-group {
+  flex: 1 1 0; /* равный рост и равная базовая ширина для всех колонок */
+  min-width: 120px; /* минимальная ширина, чтобы колонки не стали слишком узкими */
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+
+.filter-title {
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.filter-options label {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--color-link);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.sort-bar {
+  background: #f7f7f7;
+  border: 1px solid var(--color-border);
+  /* border-radius: 6px; */
+  padding: 15px 20px;
+  margin-top: 15px;
+  font-size: 11px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  max-width: 22%;
+}
+
+.sort-bar label,
+.sort-bar select,
+.sort-bar input[type="checkbox"] {
+  color: var(--color-btn-text);
+  cursor: pointer;
+  margin-top: 0px;
+  font-weight: 600;
+}
+
+.sort-bar select {
+  padding: 6px 8px;
+  font-size: 11px;
+  border-radius: 5px;
+  border: 1px solid var(--color-border);
+}
+
+.hidden {
+  display: none !important;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  font-size: 13px;
+  margin: 25px 0 20px 0;
+  flex-wrap: wrap;
+}
+
+.pagination .page, .pagination .page-next {
+  padding: 6px 12px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  user-select: none;
+  cursor: pointer;
+  color: var(--color-link);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  min-height: 32px;
+  box-sizing: border-box;
+}
+
+.pagination .page.current {
+  background-color: var(--color-current-page-bg);
+  color: var(--color-current-page-text);
+  font-weight: 700;
+  cursor: default;
+  border-color: var(--color-current-page-bg);
+}
+
+.pagination .page-next {
+  border-radius: 20px;
+  width: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.pagination .page-next:hover:not(.current) {
+  background-color: #555555;
+  color: var(--color-current-page-text);
+  border-color: #555555;
+}
+
+.games-list ul {
+  list-style: none;
+  padding: 0 10px;
+  margin: 0 0 40px 0;
+}
+
+.game-item {
+  border-bottom: 1px solid #ddd;
+  padding: 16px 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px 40px;
+}
+
+.game-title {
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: #444444;
+  flex-basis: 100%;
+  margin-bottom: 8px;
+}
+
+.game-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px 45px;
+  color: #666;
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
+.game-info > div {
+  max-width: 48%;
+  flex: 1 1 48%;
+  line-height: 1.4;
+}
+
+.sort-container {
+  position: relative;
+  display: inline-block;
+}
+
+.sort-dropdown {
+  position: absolute;
+  top: 0px;
+  left: 0;
+  background: var(--color-bg);
+  /* border: 1px solid var(--color-border); */
+  border-radius: 0px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.12);
+  padding: 0px 20px;
+  z-index: 10;
+  min-width: 140px;
+  font-size: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sort-dropdown.hidden {
+  display: none;
+}
+
+.sort-dropdown label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.descending-label {
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.descending-label input {
+  cursor: pointer;
+}
+
+input[type="checkbox"].hidden-checkbox {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+
+.controls-bar {
+  display: flex;
+  align-items: center;
+  gap: 0px;
+  padding: 30px 20px 0px 40px;
+  background-color: var(--color-bg);
+  border-bottom: 0.1px solid rgb(212, 212, 212);
+  flex-wrap: nowrap; /* избегать переноса для компактности */
+  box-sizing: border-box;
+}
+
+#game-search {
+  /* flex-grow: 1;
+  max-width: 300px;
+  padding: 8px 14px;
+  font-size: 15px;
+  color: var(--color-text);
+  border: 0.1px solid #b9b9b9;
+  /* border-radius: 6px; */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  outline-offset: 0px;
+
+  
+  background-color: var(--color-btn-bg);
+  color: var(--color-btn-text);
+  border: none;
+  border-radius: 0px;
+  padding: 10px 10px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor:text;
+  user-select: none;
+  transition: background-color 0.25s ease, color 0.25s ease;
+  box-shadow: 0 0px 0px rgba(0,0,0,0.12);
+}
+
+#game-search:focus {
+  outline: none;
+  border: none;
+  border-radius: 0px;
+  padding: 10px 10px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor:text;
+  user-select: none;
+  transition: background-color 0.25s ease, color 0.25s ease;
+  box-shadow: 1px 1px 0px rgb(156, 156, 156);
+
+  
+  /* background-color: var(--color-btn-bg-hover); */
+  /* color: var(--color-btn-text-hover); */
+}
+
+.sort-filter-apply {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn, #toggle-filters, #toggle-sort, #apply-btn {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  outline-offset: 0px;
+
+  
+  background-color: var(--color-btn-bg);
+  color: var(--color-btn-text);
+  border: none;
+  border-radius: 0px;
+  padding: 10px 10px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor:pointer;
+  user-select: none;
+  transition: background-color 0.25s ease, color 0.25s ease;
+  box-shadow: 0 0px 0px rgba(0,0,0,0.12);
+}
+
+.btn:hover, #toggle-filters:hover, #toggle-sort:hover, #apply-btn:hover {
+  outline: none;
+  border: none;
+  border-radius: 0px;
+  padding: 10px 10px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor:pointer;
+  user-select: none;
+  transition: background-color 0.25s ease, color 0.25s ease;
+  box-shadow: 0px 1px 0px rgb(156, 156, 156);
+}
+
+#apply-btn {
+  min-width: 95px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.sort-container {
+  position: relative;
+}
+
+.sort-dropdown {
+  top: 44px;
+  left: 0;
+  padding: 14px 24px;
+  font-size: 14px;
+  border-radius: 8px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.18);
+  background-color: var(--color-bg);
+  z-index: 20;
+}

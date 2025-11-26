@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<title>Game Releases</title>
+<link rel="stylesheet" href="{{ url_for('static', path='style.css') }}" />
+</head>
+<body>
+
+<header class="header-bar">
+  <div class="site-title">Game Releases</div>
+</header>
+
+<!-- Блок с поиском, сортировкой, фильтром и кнопкой -->
+<div class="controls-bar">
+  <div class="search-wrapper">
+    <input id="game-search" type="text" placeholder="Название игры" value="{{ value_filter if column_filter == 'Наименование' else '' }}" />
+  </div>
+
+  <button id="toggle-filters" class="btn">Фильтр</button>
+
+  <div class="sort-container">
+    <button id="toggle-sort" class="btn">Сортировка</button>
+    <div id="sort-dropdown" class="sort-dropdown hidden">
+        <label>
+          <input type="radio" name="sort-option" value="Наименование" {% if column_sort and "Наименование" in column_sort %}checked{% endif %}/>
+          По названию
+        </label>
+        <label>
+          <input type="radio" name="sort-option" value="Дата" {% if column_sort and "Месяц" in column_sort and "День" in column_sort %}checked{% endif %}/>
+          По дате
+        </label>
+        <label class="descending-label">
+          <input type="checkbox" id="descending-checkbox" name="descending"/>
+          По убыванию
+        </label>
+      </div>
+    </div>
+
+    <button id="apply-btn">Найти</button>
+  </div>
+</div>
+
+<div class="filter-bar hidden" id="filter-bar">
+  <div class="filter-groups">
+    {% for col, values in unique_values.items() %}
+    <div class="filter-group">
+      <div class="filter-title">{{ col }}</div>
+      <div class="filter-options">
+        {% for val in values %}
+        <label>
+          <input type="checkbox" class="filter-checkbox" data-column="{{ col }}" data-value="{{ val }}"
+          {% if value_filter == val and column_filter == col %}checked{% endif %}/>
+          {{ val }}
+        </label>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<form id="filter-form" method="get" action="/games/">
+  <input type="hidden" name="column_filter" id="column_filter" value="{{ column_filter or '' }}" />
+  <input type="hidden" name="value_filter" id="value_filter" value="{{ value_filter or '' }}" />
+  <div id="hidden-column-sort-inputs"></div>
+  <input type="hidden" name="ascending" id="ascending" value="true" />
+  <input type="hidden" name="page" value="{{ page or 1 }}" />
+  <input type="hidden" name="limit" value="{{ limit or 10 }}" />
+</form>
+
+<div class="games-list">
+  {% if items %}
+  <ul>
+    {% for game in items %}
+    <li class="game-item">
+      <div class="game-title">{{ game['Наименование'] }}</div>
+      <div class="game-info">
+        <div><strong>Платформа:</strong> {{ game['Платформа'] }}</div>
+        <div><strong>Жанр:</strong> {{ game['Жанр'] }}</div>
+        <div><strong>Разработчик:</strong> {{ game['Разработчик'] }}</div>
+        <div><strong>Издатель:</strong> {{ game['Издатель'] }}</div>
+        <div><strong>Дата релиза:</strong> {{ game['День'] }} {{ game['Месяц'] }}</div>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p>Данных нет.</p>
+  {% endif %}
+</div>
+
+<div class="pagination">
+  {% for p in range(1, 10) %}
+    {% if p == page %}
+      <span class="page current">{{ p }}</span>
+    {% else %}
+      <a href="?page={{ p }}&limit={{ limit }}{% if column_filter %}&column_filter={{ column_filter }}{% endif %}{% if value_filter %}&value_filter={{ value_filter }}{% endif %}{% if column_sort %}{% for c in column_sort %}&column_sort={{ c }}{% endfor %}{% endif %}{% if ascending %}&ascending={{ ascending }}{% endif %}" class="page">{{ p }}</a>
+    {% endif %}
+  {% endfor %}
+  {% if page < 9 %}
+    <a href="?page={{ page+1 }}&limit={{ limit }}" class="page next">Далее &raquo;</a>
+  {% endif %}
+</div>
+
+<script>
+  const toggleFiltersBtn = document.getElementById('toggle-filters');
+  const toggleSortBtn = document.getElementById('toggle-sort');
+  const filterBar = document.getElementById('filter-bar');
+  const sortDropdown = document.getElementById('sort-dropdown');
+  const hiddenSortInputsContainer = document.getElementById('hidden-column-sort-inputs');
+  const ascendingInput = document.getElementById('ascending');
+  const descendingCheckbox = document.getElementById('descending-checkbox');
+  const applyBtn = document.getElementById('apply-btn');
+  const filterForm = document.getElementById('filter-form');
+
+  const gameSearchInput = document.getElementById('game-search');
+  const columnFilterInput = document.getElementById('column_filter');
+  const valueFilterInput = document.getElementById('value_filter');
+
+  toggleFiltersBtn.addEventListener('click', () => {
+    filterBar.classList.toggle('hidden');
+    sortDropdown.classList.add('hidden');
+  });
+
+  toggleSortBtn.addEventListener('click', () => {
+    sortDropdown.classList.toggle('hidden');
+    filterBar.classList.add('hidden');
+  });
+
+  function updateColumnSortHiddenInputs() {
+    hiddenSortInputsContainer.innerHTML = '';
+    const selected = sortDropdown.querySelector('input[name="sort-option"]:checked');
+    if (!selected) return;
+    if (selected.value === 'Наименование') {
+      hiddenSortInputsContainer.innerHTML = `<input type="hidden" name="column_sort" value="Наименование">`;
+    } else if (selected.value === 'Дата') {
+      hiddenSortInputsContainer.innerHTML = `<input type="hidden" name="column_sort" value="Месяц"><input type="hidden" name="column_sort" value="День">`;
+    }
+  }
+
+  function updateAscendingValue() {
+    ascendingInput.value = !descendingCheckbox.checked;
+  }
+
+  sortDropdown.querySelectorAll('input[name="sort-option"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      updateColumnSortHiddenInputs();
+    });
+  });
+
+  descendingCheckbox.addEventListener('change', () => {
+    updateAscendingValue();
+  });
+
+  const filterCheckboxes = document.querySelectorAll('.filter-checkbox');
+  filterCheckboxes.forEach(cb => {
+    cb.addEventListener('change', () => {
+      if (cb.checked) {
+        columnFilterInput.value = cb.dataset.column;
+        valueFilterInput.value = cb.dataset.value;
+        gameSearchInput.value = '';
+      } else {
+        columnFilterInput.value = '';
+        valueFilterInput.value = '';
+      }
+    });
+  });
+
+  gameSearchInput.addEventListener('input', () => {
+    if (gameSearchInput.value.trim() !== '') {
+      columnFilterInput.value = 'Наименование';
+      valueFilterInput.value = gameSearchInput.value.trim();
+      filterCheckboxes.forEach(cb => cb.checked = false);
+    } else {
+      columnFilterInput.value = '';
+      valueFilterInput.value = '';
+    }
+  });
+
+  gameSearchInput.addEventListener('keypress', (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      applyBtn.click();
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    updateColumnSortHiddenInputs();
+    updateAscendingValue();
+  });
+
+  applyBtn.addEventListener('click', () => {
+    updateColumnSortHiddenInputs();
+    updateAscendingValue();
+
+    if (!columnFilterInput.value) columnFilterInput.removeAttribute('name');
+    if (!valueFilterInput.value) valueFilterInput.removeAttribute('name');
+
+    filterForm.submit();
+  });
+</script>
+
+</body>
+</html>
