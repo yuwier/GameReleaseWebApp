@@ -20,7 +20,7 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: var(--color-bg);
   color: var(--color-text);
-  margin: 0;
+  margin: 0px;
   padding: 0px 0px 50px 0px;
   font-size: 14px;
   line-height: 1.4;
@@ -207,6 +207,7 @@ body {
   border-color: #555555;
 }
 
+
 .games-list ul {
   list-style: none;
   padding: 0 10px;
@@ -227,6 +228,15 @@ body {
   color: #444444;
   flex-basis: 100%;
   margin-bottom: 8px;
+}
+
+.game-title p {
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: #444444;
+  flex-basis: 100%;
+  margin-bottom: 20px;
+  margin-left: 20px;
 }
 
 .game-info {
@@ -415,4 +425,22 @@ input[type="checkbox"].hidden-checkbox {
   box-shadow: 0 6px 14px rgba(0,0,0,0.18);
   background-color: var(--color-bg);
   z-index: 20;
+}
+
+
+.empty {
+  display: inline-block;
+  padding: 16px;
+  background: #111;
+  border-radius: 8px;
+  /* margin: 20px; */
+}
+
+.empty pre {
+  margin: 0;
+  margin-left: 40px; /* сдвиг ASCII-арта вправо */
+  font-family: "Courier New", monospace;
+  font-size: 14px;
+  line-height: 1.1;
+  color: #0f0;
 }
